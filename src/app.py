@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, BackgroundTasks
+from fastapi import FastAPI, Depends, HTTPException, status, BackgroundTasks, Form
 from sqlmodel import select
 from sqlmodel import Session
 from typing import List
@@ -36,10 +36,22 @@ def register(user: schemas.UserCreate):
 
 
 @app.post("/login", response_model=schemas.Token)
-def login(user: schemas.UserCreate):
+def login(username: str = Form(None), password: str = Form(None), user: schemas.UserCreate | None = None):
+    """
+    Accept either form-encoded username/password (used by Swagger UI OAuth2 password flow)
+    or JSON body matching schemas.UserCreate (used by tests / API clients).
+    """
+    # prefer form data if provided
+    if username is not None and password is not None:
+        uname, pwd = username, password
+    elif user is not None:
+        uname, pwd = user.username, user.password
+    else:
+        raise HTTPException(status_code=400, detail="Missing credentials")
+
     with Session(db.engine) as session:
-        db_user = session.exec(select(models.User).where(models.User.username == user.username)).first()
-        if not db_user or not auth.verify_password(user.password, db_user.hashed_password):
+        db_user = session.exec(select(models.User).where(models.User.username == uname)).first()
+        if not db_user or not auth.verify_password(pwd, db_user.hashed_password):
             raise HTTPException(status_code=401, detail="invalid credentials")
         token = auth.create_access_token(db_user.username)
         return {"access_token": token, "token_type": "bearer"}
