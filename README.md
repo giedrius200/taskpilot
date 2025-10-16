@@ -49,7 +49,7 @@ docker build -t taskpilot:latest .
 docker run -p 8000:8000 -e TASKPILOT_SECRET_KEY="your-secret" taskpilot:latest
 ```
 
-How the app works (short)
+How the app works
 - Authentication: JWT tokens issued on login; passwords hashed with bcrypt (passlib).
 - Persistence: SQLModel models in `src/models.py` persisted to SQLite by default.
 - API: REST endpoints for tasks and auth are implemented in `src/app.py` and `src/auth.py`.
@@ -60,5 +60,6 @@ Note about login endpoints and Swagger UI
 	- `POST /login` expects JSON body {"username":"...","password":"..."} and is used by tests and API clients.
 	- `POST /login-form` accepts form-encoded username/password (used by the Swagger UI OAuth2 "password" flow / Authorize dialog).
 	When using the interactive docs at `/docs`, the Authorize dialog will POST form data to `/login-form`. For command-line or programmatic login use `/login` with a JSON payload.
+
 
 
