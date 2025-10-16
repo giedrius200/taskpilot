@@ -61,5 +61,8 @@ Note about login endpoints and Swagger UI
 	- `POST /login-form` accepts form-encoded username/password (used by the Swagger UI OAuth2 "password" flow / Authorize dialog).
 	When using the interactive docs at `/docs`, the Authorize dialog will POST form data to `/login-form`. For command-line or programmatic login use `/login` with a JSON payload.
 
+License: MIT
+
+
 
 
