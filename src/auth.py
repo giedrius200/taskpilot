@@ -13,7 +13,7 @@ SECRET_KEY = os.environ.get("TASKPILOT_SECRET_KEY", "change-me-for-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login-form")
 
 
 def hash_password(password: str) -> str:

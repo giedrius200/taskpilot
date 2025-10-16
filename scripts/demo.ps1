@@ -1,5 +1,5 @@
 param(
-    [string]$Host = '127.0.0.1',
+    [string]$HostName = '127.0.0.1',
     [int]$Port = 8000
 )
 
@@ -7,8 +7,17 @@ Write-Host "Demo script: starting uvicorn in background..."
 
 $env:PYTHONPATH = '.'
 
-# Start uvicorn in a new process
-$uvicorn = Start-Process -FilePath pwsh -ArgumentList "-NoLogo -NoProfile -Command \"uvicorn src.app:app --host $Host --port $Port\"" -PassThru
+# Start uvicorn in a new process. Prefer pwsh if available, otherwise fall back to python -m uvicorn
+try {
+    $pwshPath = (Get-Command pwsh -ErrorAction Stop).Source
+    Write-Host "Starting uvicorn using pwsh at $pwshPath"
+    $uvicorn = Start-Process -FilePath $pwshPath -ArgumentList "-NoLogo -NoProfile -Command \"uvicorn src.app:app --host $HostName --port $Port\"" -PassThru
+} catch {
+    # fallback to python
+    $pythonPath = (Get-Command python -ErrorAction Stop).Source
+    Write-Host "pwsh not found; starting uvicorn using python at $pythonPath"
+    $uvicorn = Start-Process -FilePath $pythonPath -ArgumentList "-m uvicorn src.app:app --host $HostName --port $Port" -PassThru
+}
 Start-Sleep -Seconds 1
 
 function Invoke-Json([string]$Method, [string]$Url, $Body = $null, $Headers = $null) {
@@ -17,7 +26,7 @@ function Invoke-Json([string]$Method, [string]$Url, $Body = $null, $Headers = $n
     return Invoke-RestMethod -Method $Method -Uri $Url -ContentType 'application/json' -Body $b -Headers $Headers
 }
 
-$base = "http://$Host:$Port"
+$base = "http://${HostName}:${Port}"
 Write-Host "Using base URL: $base"
 
 Write-Host "Registering user 'alice'..."
