@@ -1,10 +1,5 @@
 # TaskPilot — Task Manager API
 
-Small FastAPI sample project demonstrating a REST API with JWT auth, persistence via SQLModel, background tasks and tests. Suitable as a CV/sample project.
-
-Badges
-- (optional) Add CI / coverage badges after you create the GitHub repo and CI workflow.
-
 Quick highlights
 - FastAPI endpoints with JWT authentication
 - SQLite persistence via SQLModel (SQLAlchemy)
@@ -65,4 +60,5 @@ Note about login endpoints and Swagger UI
 	- `POST /login` expects JSON body {"username":"...","password":"..."} and is used by tests and API clients.
 	- `POST /login-form` accepts form-encoded username/password (used by the Swagger UI OAuth2 "password" flow / Authorize dialog).
 	When using the interactive docs at `/docs`, the Authorize dialog will POST form data to `/login-form`. For command-line or programmatic login use `/login` with a JSON payload.
+
 
