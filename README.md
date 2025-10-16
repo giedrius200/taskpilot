@@ -60,3 +60,9 @@ How the app works (short)
 - API: REST endpoints for tasks and auth are implemented in `src/app.py` and `src/auth.py`.
 - Background tasks: a sample background job simulates notifications.
 
+Note about login endpoints and Swagger UI
+- This project exposes two login endpoints intentionally:
+	- `POST /login` expects JSON body {"username":"...","password":"..."} and is used by tests and API clients.
+	- `POST /login-form` accepts form-encoded username/password (used by the Swagger UI OAuth2 "password" flow / Authorize dialog).
+	When using the interactive docs at `/docs`, the Authorize dialog will POST form data to `/login-form`. For command-line or programmatic login use `/login` with a JSON payload.
+
